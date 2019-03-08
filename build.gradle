@@ -1,0 +1,133 @@
+buildscript {
+    ext {
+        springBootPluginVersion = '1.4.2.RELEASE'
+        springBootVersion = '1.4.2.RELEASE'
+        mybatisSpringVersion = '1.1.1'
+        ehcacheVersion = '2.10.2.2.21'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.spring.io/release" }
+        maven { url "http://repo.spring.io/milestone" }
+        maven { url "http://repo.spring.io/snapshot" }
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+    }
+    dependencies { 
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion"
+//        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+        }
+}
+
+plugins {
+//    id 'com.github.johnrengelman.shadow' version '5.0.0'
+//    id 'io.franzbecker.gradle-lombok' version '1.14'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+    id 'application'
+//    id 'spring-boot'
+}
+mainClassName="me.jcala.blog.Application"
+repositories {
+    mavenCentral()
+}
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'application'
+//apply plugin: 'spring-boot'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+compileJava.dependsOn(processResources)
+jar {
+    manifest {
+        attributes 'Main-Class': 'me.jcala.blog.Application'
+    }
+    baseName = 'app'
+}
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+    compile.exclude module: "velocity-tools"
+    compile.exclude module: "undertow-websockets-jsr"
+    compile.exclude group: 'org.apache.tomcat.embed'
+    compile.exclude group: 'org.apache.tomcat'
+    compile.exclude group: 'org.apache.struts'
+    compile.exclude group: 'com.fasterxml'
+    compile.exclude group: 'org.hibernate'
+    compile.exclude group: 'org.glassfish'
+    compile.exclude group: 'dom4j'
+    compile.exclude group: 'c3p0'
+    compile.exclude group: 'ch.qos.logback'
+}
+bootRun {
+    addResources = true
+}
+
+//lombok {
+//    version = "1.16.20"
+//    sha256 = "c5178b18caaa1a15e17b99ba5e4023d2de2ebc18b58cde0f5a04ca4b31c10e6d"
+//}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/release" }
+    maven { url "http://repo.spring.io/milestone" }
+    maven { url "http://repo.spring.io/snapshot" }
+}
+
+dependencies {
+//    加载单独的jar包
+//    在项目底下添加libs目录,将jar包仍进libs目录
+//    build.gradle配置如下:
+//    dependencies { compile files('lib/ojdbc-14.jar')}
+//    1
+//    加载某个目录的jar包
+//    在自己的 Gradle 项目里建立一个名为 libs （这个名字可以自己定义，不一定非要叫这个名字）的文件夹，把自己本地的 jar 包拷贝到这个文件夹中。
+//    build.gradle配置如下:
+//
+//    dependencies { compile fileTree(dir:'lib',include:['*.jar'])}
+//    compile files('lib/*.jar')
+    // https://mvnrepository.com/artifact/org.json/json
+    compile group: 'org.json', name: 'json', version: '20180813'
+    // https://mvnrepository.com/artifact/com.alibaba/fastjson
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.56'
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.slf4j:slf4j-simple'
+    implementation 'org.springframework.boot:spring-boot-starter-undertow'
+    implementation 'org.springframework.boot:spring-boot-starter-velocity'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //--------------------数据库驱动----------------------------
+    implementation 'mysql:mysql-connector-java:8.0.15'
+    //-------------------数据库连接池---------------------------
+    implementation 'com.zaxxer:HikariCP:2.5.1'
+    //----------------------ORM--------------------------------
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0")
+    //--------------------JDK工具------------------------------
+    implementation 'org.projectlombok:lombok:1.16.12'
+    //---------------------缓存-------------------------------
+    implementation "net.sf.ehcache:ehcache:$ehcacheVersion"
+}
+//清除上次的编译过的文件
+task clearPj(type:Delete){
+    delete 'build','target'
+}
+
+task copyJar(type:Copy){
+    from configurations.runtime
+    into ('build/libs/lib')
+
+}
+
+//把JAR复制到目标目录
+task release(type: Copy,dependsOn: [build,copyJar]) {
+//    from  'conf'
+//    into ('build/libs/eachend/conf') // 目标位置
+}

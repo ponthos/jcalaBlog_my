@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_jcalablog-master" default="compile.module.jcalablog-master">
+  <dirname property="module.jcalablog-master.basedir" file="${ant.file.module_jcalablog-master}"/>
+  
+  <property name="module.jdk.home.jcalablog-master" value=""/>
+  <property name="module.jdk.bin.jcalablog-master" value=""/>
+  <property name="module.jdk.classpath.jcalablog-master" value=""/>
+  
+  <property name="compiler.args.jcalablog-master" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="jcalablog-master.output.dir" value="${module.jcalablog-master.basedir}/out/production/jcalaBlog-master"/>
+  <property name="jcalablog-master.testoutput.dir" value="${module.jcalablog-master.basedir}/out/test/jcalaBlog-master"/>
+  
+  <path id="jcalablog-master.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jcalablog-master.module.production.classpath"/>
+  
+  <path id="jcalablog-master.runtime.production.module.classpath">
+    <pathelement location="${jcalablog-master.output.dir}"/>
+  </path>
+  
+  <path id="jcalablog-master.module.classpath">
+    <pathelement location="${jcalablog-master.output.dir}"/>
+  </path>
+  
+  <path id="jcalablog-master.runtime.module.classpath">
+    <pathelement location="${jcalablog-master.testoutput.dir}"/>
+    <pathelement location="${jcalablog-master.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jcalablog-master">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jcalablog-master">
+    <patternset refid="excluded.from.module.jcalablog-master"/>
+  </patternset>
+  
+  
+  <target name="compile.module.jcalablog-master" depends="compile.module.jcalablog-master.production,compile.module.jcalablog-master.tests" description="Compile module jcalaBlog-master"/>
+  
+  <target name="compile.module.jcalablog-master.production" depends="register.custom.compilers" description="Compile module jcalaBlog-master; production classes"/>
+  
+  <target name="compile.module.jcalablog-master.tests" depends="register.custom.compilers,compile.module.jcalablog-master.production" description="compile module jcalaBlog-master; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.jcalablog-master" description="cleanup module">
+    <delete dir="${jcalablog-master.output.dir}"/>
+    <delete dir="${jcalablog-master.testoutput.dir}"/>
+  </target>
+</project>
